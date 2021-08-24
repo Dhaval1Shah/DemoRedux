@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Contacts } from './components/contacts/Contacts';
+import Contacts from './components/contacts/Contacts';
 import { Navbar } from './components/elements/Navbar';
 import "./styles/App.scss";
 import { Provider } from 'react-redux';

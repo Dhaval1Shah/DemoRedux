@@ -1,15 +1,29 @@
-import React, { useState } from 'react'
-import Contact from './contact';
+import React, { useState, useEffect } from 'react'
+import Contact from './Contact';
 import { useSelector } from 'react-redux'
-import { composeWithDevTools } from 'redux-devtools-extension';
+import { useDispatch } from 'react-redux';
+import { selectAllContact, clearContacts, deleteAllContacts } from '../../actions/contactAction';
 
-export const Contacts = () => {
-    const [select, setSelect] = useState(false);
+
+const Contacts = () => {
+    const dispatch = useDispatch();
+    const [selectAll, setSelectAll] = useState(false);
     const contacts = useSelector(state => state.contact.contacts)
+    const selectedContacts = useSelector(state => state.contact.selectedContacts)
 
+    useEffect(() => {
+        if (selectAll) {
+            dispatch(selectAllContact(contacts.map(contact => console.log(contact))))
+        } else {
+            dispatch(clearContacts())
+        }
+    }, [selectAll])
 
     return (
         <div>
+            {
+                selectedContacts.length > 0 ? (<button className="btn btn-danger mb-3" onClick={() => dispatch(deleteAllContacts())}>Delete All</button>) : null
+            }
             <table className="table shadow">
                 <thead className="bg-primary text-white">
                     <tr>
@@ -19,11 +33,12 @@ export const Contacts = () => {
                                     id="select"
                                     type="checkbox"
                                     className="custom-control-input"
-                                    value={select}
-                                    onClick={() => setSelect(!select)}
+                                    value={selectAll}
+                                    onClick={() => setSelectAll(!selectAll)}
+
                                 />
                                 <label
-                                    htmlFor="select"
+                                    htmlFor="selectAll"
                                     className="custom-control-label"
                                 ></label>
                             </div>
@@ -36,9 +51,9 @@ export const Contacts = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {
-                        contacts.map((contact) => <Contact contact={contact} key={Math.random()} />)
-                    }
+                    {contacts.map((contact) => (
+                        <Contact contact={contact} key={contact.id} selectAll={selectAll} />
+                    ))}
 
 
                 </tbody>
@@ -46,3 +61,5 @@ export const Contacts = () => {
         </div>
     )
 }
+
+export default Contacts;
